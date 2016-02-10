@@ -23,7 +23,7 @@ from sklearn import tree
 # x2 - SMA(за два времеви периода) x[24] = x[24,23..15] / x[24..1]
 # ?x3 -  авторегресия y = a*x + b -> y = c[101]  x = c[1..100]
 # x4 -  цената -> oтклик | времева единица -> предиктор
-# x5 - затваряне
+# x5 - затваряне 
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -103,7 +103,7 @@ for i in range(10):
 
 
 print("The action starts here")
-clf = tree.DecisionTreeClassifier()
+clf = tree.DecisionTreeRegressor()
 
 X = np.array(X).astype(float)
 
@@ -112,7 +112,7 @@ clf = clf.fit(X, Y)
 
 print(ala_bala[-1], b[-1])
 
-# print(clf.predict(ala_bala[-1]))
+print(clf.predict(ala_bala[-1]))
 
 print("Boooom boooom...")
 # array([1])
