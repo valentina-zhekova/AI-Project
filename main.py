@@ -20,7 +20,8 @@ import csv
 with open('EURUSD240.csv', 'r') as csvfile:
 	datareader = list(csv.reader(csvfile))
 	# print(spamreader[0])
-	
+
+
 closing_prices = []
 times = [] # [[1], [2] ... ]
 counter = 0;
@@ -32,7 +33,6 @@ for row in datareader:
 	test.append(counter)
 	times.append(test)
 	closing_prices.append(float(row[5]))
-
 
 
 
@@ -86,17 +86,15 @@ X = [[r2_values[i], sma_values[i]] for i in range(len(r2_values) - 1)] #tree arg
 
 Y = closing_prices[23:len(closing_prices) - 1]
 
-print("The action starts here")
+# print("The action starts here")
 # Fit the tree
 decision_tree = tree.DecisionTreeRegressor()
 decision_tree = decision_tree.fit(X, Y)
 
-
-
-print([r2_values[-1], sma_values[-1]], closing_prices[-1])
-new_closing_price = decision_tree.predict([r2_values[-1], sma_values[-1]])
-print(new_closing_price)
-print(len(sma_values))
+# print([r2_values[-1], sma_values[-1]], closing_prices[-1])
+new_closing_price = decision_tree.predict([[r2_values[-1], sma_values[-1]]]) # so much array cause otherwise throw an annoying warning
+# print(new_closing_price)
+# print(len(sma_values))
 
 def update_times_values():
 	times.append([len(times) + 1])
@@ -117,22 +115,36 @@ def update_r2_values():
 def update_sma_values():
 	return get_sma(closing_prices)[23:]
 
+current_closing_price = closing_prices[-2]
+desired_value = 1.4032
 
-times = update_times_values()
-closing_prices = update_closing_prices_values(new_closing_price)
-r2_values = update_r2_values()
-sma_values = update_sma_values()
+def condition(new_value, desired_value):
+	if desired_value > current_closing_price:
+		return new_value >= desired_value
+	elif desired_value < current_closing_price:
+		return new_value <= desired_value
 
+print("Current price is ", current_closing_price, " and we want to reach price of ", desired_value, ":\n")
+day = 1
+print("Day ", day, " closing price is ", new_closing_price)
 
-new_closing_price = decision_tree.predict([r2_values[-1], sma_values[-1]])
+while not condition(new_closing_price, desired_value):
+	day += 1
+	times = update_times_values()
+	closing_prices = update_closing_prices_values(new_closing_price)
+	r2_values = update_r2_values()
+	sma_values = update_sma_values()
 
-print(new_closing_price)
-print(len(sma_values))
+	new_closing_price = decision_tree.predict([[r2_values[-1], sma_values[-1]]])
+	print("Day ", day, " closing price is ", new_closing_price)
 
+# POTATO!!!!!!
 
+print("\nAfter ", day, " days you will be there.\nIf it's too slow a piece of Milka may help with teleporting;)\n...or vodka, for more information please check: http://lefunny.net/wp-content/uploads/2013/10/Funny-meme-about-how-to-teleport.jpg")
+# print(new_closing_price)
+# print(len(sma_values))
 
-
-print("Boooom boooom...")
+# print("Boooom boooom... boooom, shte si kupq avtomat!!!")
 # array([1])
 
 # nulite sa zaradi int casta gore !!!!
